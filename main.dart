@@ -34,6 +34,16 @@ void main() async {
     return Response.ok("Task added sucessfully");
   });
 
+  router.put("/task/<id>/done", (Request request, String id) async {
+    await markDone(int.parse(id));
+    Response.ok("task successfully done");
+  });
+
+  router.delete("/task/<id>", (Request request, String id) async {
+    await deleteTask(int.parse(id));
+    Response.ok("task successfully deleted $id.");
+  });
+
   final handler = const Pipeline()
       .addMiddleware(logRequests())
       .addHandler(router);
