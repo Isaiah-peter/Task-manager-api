@@ -12,3 +12,9 @@ CREATE TABLE tasks (
     priority TEXT NOT NULL CHECK (priority IN ('high', 'medium', 'low')),
     status TEXT NOT NULL DEFAULT 'Pending' CHECK (status IN ('Pending', 'Done'))
 );
+
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password TEXT NOT NULL  -- store hashed password ideally
+);
