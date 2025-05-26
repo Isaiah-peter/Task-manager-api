@@ -16,15 +16,20 @@ Future<bool> createUser(String username, String password) async {
 
 Future<String?> loginUSer(String username, String password) async {
   try {
-    await conn.execute(
+    final result = await conn.execute(
       Sql.named(
         "SELECT * FROM users WHERE users.username = @u AND users.password = @p",
       ),
       parameters: {'u': username, 'p': password},
     );
-    return generateJWT(username);
+
+    if (result.isNotEmpty) {
+      final userid = result.first[0] as int;
+      return generateJWT(username, userid);
+    } else {
+      return null;
+    }
   } catch (e) {
     return null;
   }
 }
-

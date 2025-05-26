@@ -18,3 +18,5 @@ CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(50) UNIQUE NOT NULL,
   password TEXT NOT NULL  -- store hashed password ideally
 );
+
+ALTER TABLE tasks ADD COLUMN user_id INTEGER REFERENCES users(id);
