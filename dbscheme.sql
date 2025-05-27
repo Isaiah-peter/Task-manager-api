@@ -5,7 +5,7 @@ CREATE DATABASE todomanager;
 \c todomanager;
 
 -- 3. Create the tasks table
-CREATE TABLE tasks (
+CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
     description TEXT NOT NULL,
     due DATE NOT NULL,
@@ -16,7 +16,10 @@ CREATE TABLE tasks (
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(50) UNIQUE NOT NULL,
-  password TEXT NOT NULL  -- store hashed password ideally
+  password TEXT NOT NULL,  -- store hashed password ideally
+  email VARCHAR(50) UNIQUE NOT NULL,
+  fistname VARCHAR(50) NOT NULL,
+  lastname VARCHAR(50) NOT NULL
 );
 
 ALTER TABLE tasks ADD COLUMN user_id INTEGER REFERENCES users(id);

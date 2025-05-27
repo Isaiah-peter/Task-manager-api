@@ -24,9 +24,15 @@ void main() async {
 
     final username = data['username'] ?? '';
     final password = data['password'] ?? '';
+    final email = data['email'] ?? '';
+    final firstname = data['firstname'] ?? '';
+    final lastname = data['lastname'] ?? '';
 
-    final ok = await createUser(username, password);
-    return ok ? Response.ok("User successfully created") : Response(400, body: "username or password missing");
+    final ok = await createUser(username, password, email, firstname, lastname);
+    print(ok);
+    return ok
+        ? Response.ok("User successfully created")
+        : Response(400, body: "username or password or emailing missing");
   });
 
   router.post('/auth/login', (Request request) async {
@@ -37,7 +43,9 @@ void main() async {
     final password = data['password'] ?? '';
 
     final token = await loginUSer(username, password);
-    return token != null ? Response.ok("Successfully login") : Response(400, body: "Invalid credentials");
+    return token != null
+        ? Response.ok("Successfully login")
+        : Response(400, body: "Invalid credentials");
   });
 
   protected.get('/tasks', (Request request) async {
