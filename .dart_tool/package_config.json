@@ -26,6 +26,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "bcrypt",
+      "rootUri": "file:///C:/Users/USER/AppData/Local/Pub/Cache/hosted/pub.dev/bcrypt-1.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.16"
+    },
+    {
       "name": "buffer",
       "rootUri": "file:///C:/Users/USER/AppData/Local/Pub/Cache/hosted/pub.dev/buffer-1.2.3",
       "packageUri": "lib/",
@@ -248,7 +254,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-05-25T19:01:42.459005Z",
+  "generated": "2025-05-26T05:54:24.224178Z",
   "generator": "pub",
   "generatorVersion": "3.7.3",
   "pubCache": "file:///C:/Users/USER/AppData/Local/Pub/Cache"
