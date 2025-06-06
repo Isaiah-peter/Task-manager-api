@@ -54,3 +54,41 @@ Future<String?> loginUSer(String username, String password) async {
     return null;
   }
 }
+
+Future<int> findOrCreateUser({
+  required String email,
+  required String firstName,
+  required String lastName,
+}) async {
+  // Check if user already exists
+  final existing = await conn.execute(
+    Sql.named('SELECT id FROM users WHERE email = @e'),
+    parameters: {'e': email},
+  );
+
+  if (existing.isNotEmpty) return existing.first[0] as int;
+
+  // Insert new user
+  await conn.execute(
+    Sql.named('''
+      INSERT INTO users (username, password, email, fistname, lastname)
+      VALUES (@u, @p, @e, @f, @l)
+    '''),
+    parameters: {
+      'u': firstName,
+      'p': 'oauth',  // or generate a secure placeholder
+      'e': email,
+      'f': firstName,
+      'l': lastName,
+    },
+  );
+
+  // Get new user ID
+  final result = await conn.execute(
+    Sql.named('SELECT id FROM users WHERE email = @e'),
+    parameters: {'e': email},
+  );
+
+  return result.first[0] as int;
+}
+

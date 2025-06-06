@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import './gen/env.g.dart';
 import 'package:shelf/shelf.dart';
-import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
+import './gen/env.g.dart';
+import 'jwt_auth.dart';
+import 'auth.dart';
 
 Router get googleRouter {
   final router = Router();
@@ -11,8 +12,8 @@ Router get googleRouter {
   // Step 1: Redirect to Google
   router.get('/auth/google', (Request req) {
     final uri = Uri.https('accounts.google.com', '/o/oauth2/v2/auth', {
-      'client_id': Env.,
-      'redirect_uri': redirectUri,
+      'client_id': Env.clientid,
+      'redirect_uri': Env.redirecturi,
       'response_type': 'code',
       'scope': 'openid email profile',
       'access_type': 'online',
@@ -32,9 +33,9 @@ Router get googleRouter {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: {
         'code': code,
-        'client_id': googleClientId,
-        'client_secret': googleClientSecret,
-        'redirect_uri': redirectUri,
+        'client_id': Env.clientid,
+        'client_secret': Env.clientsecret,
+        'redirect_uri': Env.redirecturi,
         'grant_type': 'authorization_code',
       },
     );
@@ -50,13 +51,19 @@ Router get googleRouter {
 
     final userData = jsonDecode(userResp.body);
     final email = userData['email'];
-    final name = userData['name'];
+    final firstName = userData['given_name'];
+    final lastName = userData['family_name'];
+
 
     // Optional: Register user in your DB if not exists
-    final userId = await findOrCreateUser(email, name);
+    final userId = await findOrCreateUser(
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+    );
 
     // Step 5: Issue your own JWT
-    final jwt = generateJwt(email, userId);
+    final jwt = generateJWT(firstName, userId);
 
     return Response.ok(
       jsonEncode({'token': jwt, 'email': email}),
