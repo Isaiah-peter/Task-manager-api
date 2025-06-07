@@ -76,7 +76,7 @@ Future<int> findOrCreateUser({
     '''),
     parameters: {
       'u': firstName,
-      'p': 'oauth',  // or generate a secure placeholder
+      'p': 'oauth', // or generate a secure placeholder
       'e': email,
       'f': firstName,
       'l': lastName,
@@ -92,3 +92,18 @@ Future<int> findOrCreateUser({
   return result.first[0] as int;
 }
 
+Future<List<Map<String, dynamic>>> getUser(int id) async {
+  await ConnectDB();
+  final result = await conn.execute(
+    Sql.named('SELECT * FROM users WHERE id = @id'),
+    parameters: {id: id},
+  );
+
+  return result.map((row) => {
+    'id':row[0],
+    'username': row[1],
+    'email': row[3],
+    'firstname': row[4],
+    'lastname':row[5]
+  }).toList();
+}

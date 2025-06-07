@@ -63,7 +63,7 @@ Router get googleRouter {
     );
 
     // Step 5: Issue your own JWT
-    final jwt = generateJWT(firstName, userId);
+    final jwt = generateJWT(email, userId);
 
     return Response.ok(
       jsonEncode({'token': jwt, 'email': email}),
