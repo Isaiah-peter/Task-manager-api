@@ -54,3 +54,56 @@ Future<String?> loginUSer(String username, String password) async {
     return null;
   }
 }
+
+Future<int> findOrCreateUser({
+  required String email,
+  required String firstName,
+  required String lastName,
+}) async {
+  // Check if user already exists
+  final existing = await conn.execute(
+    Sql.named('SELECT id FROM users WHERE email = @e'),
+    parameters: {'e': email},
+  );
+
+  if (existing.isNotEmpty) return existing.first[0] as int;
+
+  // Insert new user
+  await conn.execute(
+    Sql.named('''
+      INSERT INTO users (username, password, email, fistname, lastname)
+      VALUES (@u, @p, @e, @f, @l)
+    '''),
+    parameters: {
+      'u': firstName,
+      'p': 'oauth', // or generate a secure placeholder
+      'e': email,
+      'f': firstName,
+      'l': lastName,
+    },
+  );
+
+  // Get new user ID
+  final result = await conn.execute(
+    Sql.named('SELECT id FROM users WHERE email = @e'),
+    parameters: {'e': email},
+  );
+
+  return result.first[0] as int;
+}
+
+Future<List<Map<String, dynamic>>> getUser(int id) async {
+  await ConnectDB();
+  final result = await conn.execute(
+    Sql.named('SELECT * FROM users WHERE id = @id'),
+    parameters: {id: id},
+  );
+
+  return result.map((row) => {
+    'id':row[0],
+    'username': row[1],
+    'email': row[3],
+    'firstname': row[4],
+    'lastname':row[5]
+  }).toList();
+}

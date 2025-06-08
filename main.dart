@@ -7,6 +7,7 @@ import 'package:task_manager/auth.dart';
 import './lib/database.dart';
 import './lib/tasks.dart';
 import './bin/server.dart';
+import './lib/googleoauth.dart';
 
 void main() async {
   await ConnectDB();
@@ -85,7 +86,13 @@ void main() async {
 
   final handler = const Pipeline()
       .addMiddleware(logRequests())
-      .addHandler(Cascade().add(router).add(checkjwt(protected)).handler);
+      .addHandler(
+        Cascade()
+            .add(router)
+            .add(googleRouter)
+            .add(checkjwt(protected))
+            .handler,
+      );
 
   final server = await serve(handler, InternetAddress.anyIPv4, 6000);
   print("✅ Server listening on port ${server.port}");
